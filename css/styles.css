@@ -1,6 +1,10 @@
 /**
 */
 
+p, h1{
+    margin: 1% 10%;
+}
+
 div.tooltip {
     position: absolute;
     text-align: center;
@@ -15,16 +19,9 @@ div.tooltip {
     pointer-events: none;
 }
 
-svg {
-    position: absolute;
-    left: 50%;
-    top: 45%;
-    padding: 0.5%;
-    transform: translate(-50%, -50%);
-    /*width: 50%;
-    height: 50%;
-    background-color: #A7CDF2;
-    border-radius: 2%;*/
+svg{
+    display: block;
+    margin: auto;    
 }
 
 .background {
