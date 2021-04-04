@@ -1,3 +1,6 @@
+/**
+*/
+
 div.tooltip {
     position: absolute;
     text-align: center;
@@ -50,4 +53,8 @@ text.big-text {
 
 .effect-layer text, text.dummy-text {
     font-size: 12px;
+}
+
+​svg path {
+    fill: red;
 }
