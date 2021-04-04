@@ -47,7 +47,7 @@
         var width = 1000, height = 500, centered;
 
         var color = d3.scale.linear()
-            .domain([1, 20])
+            .domain([10000, 100000])
             .clamp(true)
             .range(['#fff', '#409A99']);
 
@@ -67,7 +67,7 @@
             .attr('class', 'background')
             .attr('width', width)
             .attr('height', height);
-            //.on('click', clicked);
+        //.on('click', clicked);
 
         var g = svg.append('g');
 
@@ -75,6 +75,9 @@
             .classed('effect-layer', true);
 
         var mapLayer = g.append('g')
+            .classed('map-layer', true);
+
+        var mapLayer2 = g.append('g')
             .classed('map-layer', true);
 
         var dummyText = g.append('text')
@@ -88,9 +91,8 @@
             .attr('x', 20)
             .attr('y', 45);
 
-            // colombia.geo.json
-            // PMH_SD_20170101_Cartografia.geojson
-        d3.json('data/PMH_SD_20170101_Cartografia.geojson', function (error, mapData) {
+        // Poblation map
+        d3.json('data/indicadores_poblacion_municipios.geojson', function (error, mapData) {
             var features = mapData.features;
 
             console.log(features[0]);
@@ -100,14 +102,165 @@
                 .data(features)
                 .enter().append('path')
                 .attr('d', path)
-                .attr('vector-effect', 'non-scaling-stroke');
-                //.style('fill', fillFn)
-                //.on('mouseover', mouseover)
-                //.on('mouseout', mouseout)
-                //.on('click', clicked);
+                .attr('vector-effect', 'non-scaling-stroke')
+                .style('fill', fillFn)
+                .on('mouseover', mouseover)
+                .on('mouseout', mouseout)
+                .on('click', clicked);
+        });
+
+        d3.json('data/grid250Canarias_poblacion.geojson', function (error, mapData) {
+            var features = mapData.features;
+
+            mapLayer2.selectAll('path')
+                .data(features)
+                .enter().append('path')
+                .attr('d', path)
+                /*.attr('vector-effect', 'non-scaling-stroke')
+                .style('fill', "#FF0000")
+                .on('mouseover', mouseover)
+                .on('mouseout', mouseout)
+                .on('click', clicked);*/
+                ;
         });
 
         // Aditional functions
+        function nameFn(d) {
+            return d && d.properties ? d.properties.label : null;
+        }
+        
+        function nameLength(d) {
+            var n = nameFn(d);
+            return n ? n.length : 0;
+        }
+
+        function fillFn(d) {
+            return color(d.properties.indicadores_municipal_TOTAL);
+        }
+
+        function clicked(d) {
+            var x, y, k;
+
+            if (d && centered !== d) {
+                var centroid = path.centroid(d);
+                x = centroid[0];
+                y = centroid[1];
+                k = 4;
+                centered = d;
+            } else {
+                x = width / 2;
+                y = height / 2;
+                k = 1;
+                centered = null;
+            }
+
+            mapLayer.selectAll('path')
+                .style('fill', function (d) { return centered && d === centered ? '#D5708B' : fillFn(d); });
+
+            g.transition()
+                .duration(750)
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')');
+        }
+
+        function mouseover(d) {
+            d3.select(this).style('fill', 'orange');
+
+            textArt(nameFn(d));
+        }
+
+        function mouseout(d) {
+            mapLayer.selectAll('path')
+                .style('fill', function (d) { return centered && d === centered ? '#D5708B' : fillFn(d); });
+
+            effectLayer.selectAll('text').transition()
+                .style('opacity', 0)
+                .remove();
+
+            bigText.text('');
+        }
+
+        var BASE_FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+        var FONTS = [
+            "Open Sans",
+            "Josefin Slab",
+            "Arvo",
+            "Lato",
+            "Vollkorn",
+            "Abril Fatface",
+            "Old StandardTT",
+            "Droid+Sans",
+            "Lobster",
+            "Inconsolata",
+            "Montserrat",
+            "Playfair Display",
+            "Karla",
+            "Alegreya",
+            "Libre Baskerville",
+            "Merriweather",
+            "Lora",
+            "Archivo Narrow",
+            "Neuton",
+            "Signika",
+            "Questrial",
+            "Fjalla One",
+            "Bitter",
+            "Varela Round"
+        ];
+
+        function textArt(text) {
+            // Use random font
+            var fontIndex = Math.round(Math.random() * FONTS.length);
+            var fontFamily = FONTS[fontIndex] + ', ' + BASE_FONT;
+
+            bigText
+                .style('font-family', fontFamily)
+                .text(text);
+
+            // Use dummy text to compute actual width of the text
+            // getBBox() will return bounding box
+            dummyText
+                .style('font-family', fontFamily)
+                .text(text);
+            var bbox = dummyText.node().getBBox();
+
+            var textWidth = bbox.width;
+            var textHeight = bbox.height;
+            var xGap = 3;
+            var yGap = 1;
+
+            var selection = effectLayer.selectAll('text')
+                .data(positions, function (d) { return d.text + '/' + d.index; });
+
+            // Clear old ones
+            selection.exit().transition()
+                .style('opacity', 0)
+                .remove();
+
+            // Create text but set opacity to 0
+            selection.enter().append('text')
+                .text(function (d) { return d.text; })
+                .attr('x', function (d) { return d.x; })
+                .attr('y', function (d) { return d.y; })
+                .style('font-family', fontFamily)
+                .style('fill', '#777')
+                .style('opacity', 0);
+
+            selection
+                .style('font-family', fontFamily)
+                .attr('x', function (d) { return d.x; })
+                .attr('y', function (d) { return d.y; });
+
+            // Create transtion to increase opacity from 0 to 0.1-0.5
+            // Add delay based on distance from the center of the <svg> and a bit more randomness.
+            selection.transition()
+                .delay(function (d) {
+                    return d.distance * 0.01 + Math.random() * 1000;
+                })
+                .style('opacity', function (d) {
+                    return 0.1 + Math.random() * 0.4;
+                });
+        }
 
     </script>
 </body>
