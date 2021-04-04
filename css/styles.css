@@ -1,0 +1,53 @@
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 0.5%;
+    font: 12px sans-serif;
+    color: #FFF;
+    background: #000;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+svg {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    padding: 0.5%;
+    transform: translate(-50%, -50%);
+    /*width: 50%;
+    height: 50%;
+    background-color: #A7CDF2;
+    border-radius: 2%;*/
+}
+
+.background {
+    fill: #A7CDF2;
+    pointer-events: all;
+}
+
+.map-layer {
+    fill: #fff;
+    stroke: #aaa;
+}
+
+.effect-layer {
+    pointer-events: none;
+}
+
+text {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+}
+
+text.big-text {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.effect-layer text, text.dummy-text {
+    font-size: 12px;
+}
