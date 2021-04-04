@@ -85,9 +85,14 @@
         // Load data
         d3.json("grid250Canarias_poblacion.geojson", function (error, ca) {
             if (error) return console.error(error);
-            console.log(ca)
+
+
+            svg.append("path")
+                .datum(topojson.feature(uk, uk.objects.subunits))
+                .attr("d", d3.geo.path().projection(d3.geo.mercator()));
         });
 
+        // Setting up variables
         var width = 960, height = 1160;
 
         var svg = d3.select("#map").append("svg")
