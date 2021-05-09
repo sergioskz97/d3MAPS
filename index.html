@@ -33,30 +33,35 @@
 <body>
     <!-- Nabvar START -->
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="https://d3js.org/">
+        <a class="navbar-brand" href="https://d3js.org/" style="margin-left: 5%;">
             <img src="./assets/logo.png" width="30" height="30" alt="D3js logo" style="margin-left: 20%;">
             Generación de mapas en D3
         </a>
     </nav>
     <!-- Navbar END -->
 
-    <h1 class="display-4" align="center">Granularidad de Canarias</h1>
+    <!-- Content -->
+    <div class="container">
+        <h1 class="display-4">Granularidad de Canarias</h1>
 
-    <p align="Center">
-        Cuando hablamos de granularidad en almacenamiento de datos, se refiere a la especificidad a la que se define un
-        nivel de detalle en una tabla, es decir, si hablamos de una jerarquía la granularidad empieza por la parte más
-        alta de la jerarquía, siendo la granularidad mínima, el nivel más bajo. En Data Warehouse, no solo existe
-        granularidad para las tablas de hechos (Fact's), también existe granularidad en las dimensiones.
+        <p>
+            Cuando hablamos de granularidad en almacenamiento de datos, se refiere a la especificidad a la que se define
+            un
+            nivel de detalle en una tabla, es decir, si hablamos de una jerarquía la granularidad empieza por la parte
+            más
+            alta de la jerarquía, siendo la granularidad mínima, el nivel más bajo. En Data Warehouse, no solo existe
+            granularidad para las tablas de hechos (Fact's), también existe granularidad en las dimensiones.
+
+            <br>
+
+            El presente gráfico muestra la granularidad de población en Canarias
+        </p>
 
         <br>
-
-        El presente gráfico muestra la granularidad de población en Canarias
-    </p>
-
-    <!-- Map container -->
-    <svg></svg>
-
-    
+        <!-- Map container -->
+        <svg></svg>
+    </div>
+    <!-- Content END -->
 
     <!-- Map script -->
     <script type="text/javascript">
